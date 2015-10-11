@@ -1,5 +1,5 @@
 /* CSS declarations go here */
-* {
+/** {
   box-sizing:content-box;
 }
 
@@ -12,27 +12,35 @@ body {
   margin-left:auto;
   margin-right:auto;
   text-align:center;
-}
+}*/
 
 /**
  * Responsive image
  */
 .upload-cell {
-  margin: 1rem;
+  margin: 1rem 1rem 2rem 1rem;
   /*max-height:400px;*/
   /*width:auto;*/
   /*max-width:400px;*/
-  display:inline-block;
+  /*display:inline-block;*/
   /*float:left;*/
   /*object-fit: contain;*/
+  text-align:center;
 }
 
-@media (max-width: 480px) {
+.upload-cell img {
+  max-width:100%;
+  height:auto;
+  opacity: 0;
+  transition: opacity .3s ease-in;
+}
+
+/*@media (max-width: 480px) {
   .upload-cell {
     width: 100% !important;
     margin:0;
   }
-}
+}*/
 
 .fit-image-wrapper {
   background-size:contain;

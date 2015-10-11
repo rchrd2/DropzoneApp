@@ -16,25 +16,31 @@
     {{/unless}}
   {{/if}}
 
-  {{#unless uploads.count}}
-    <div>Empty</div>
-  {{/unless}}
+  {{#if isLoaded}}
+    {{#each uploads}}
+      {{> upload_tmpl}}
+    {{else}}
+      <div>Empty</div>
+    {{/each}}
+  {{/if}}
 
-  {{#each uploads}}
-    {{> upload_tmpl}}
-  {{/each}}
+
 </template>
 
 <template name="upload_tmpl">
   <div class="upload-cell" style="{{style}}">
     {{#if this.isImage}}
-      {{!-- <img src="{{url}}" />-- }}
-      <div class="fit-image-wrapper" style="background-image:url({{url}});"></div>
+      <div class="image">
+        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+             width="500px" height="500px" data-src="{{url}}">
+        {{!-- {{> img src=url }}--}}
+      </div>
+      {{!--<div class="fit-image-wrapper" style="background-image:url({{url}});"></div>--}}
     {{else}}
-      <a href="{{url}}">{{name}}</a>
+      <div class="link"><a href="{{url}}">{{name}}</a></div>
     {{/if}}
     {{#if writeEnabled}}
-      <button class="deleteButton" docId="{{_id}}">Delete</button>
+      <div class="controls"><button class="deleteButton" docId="{{_id}}">Delete</button></div>
     {{/if}}
   </div>
 </template>

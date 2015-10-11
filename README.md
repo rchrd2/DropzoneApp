@@ -10,15 +10,16 @@ Setup:
 TODO
 - [x] Delete files
 - [x] Sandstorm user integration
-- [ ] Finish the layout design
+- [x] Finish the layout design
 - [x] Improve security
 
 Maybe TODO
 - [ ] Add text field to files
 - [ ] Allow re-ordering of files
 - [ ] Add audio and video player
-
+- [ ] Add instance settings. Eg page title
 
 ## Reference
 
 - https://github.com/tomitrescak/meteor-uploads
+- http://luis-almeida.github.io/unveil/

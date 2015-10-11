@@ -10,46 +10,20 @@ var Uploads = new Mongo.Collection("Uploads", {
   transform: (doc) => new UploadModel(doc),
 });
 
-/**
- * Check if user has sandstorm permissions to edit the document
- * @param {String} userId
- */
-var hasPermission = function (userId) {
-  var result;
-  try {
-    var user = Meteor.users.findOne(userId);
-    var p = user.services.sandstorm.permissions;
-    result = p.indexOf('modify') !== -1 || p.indexOf('owner') !== -1;
-  } catch (err) {
-    result = false;
-  }
-  return result;
-}
 
 if (Meteor.isClient) {
   Session.set("_isDrag", false);
+  Session.set("_itemsLoaded", false);
 
   Template.dropzone_app.helpers({
     uploads: () => Uploads.find({}, {sort: {createdAt: -1}}),
     empty: () => Uploads.find().count() === 0,
     isDrag: () => Session.get("_isDrag"),
     writeEnabled: () => hasPermission(Meteor.userId()),
+    isLoaded: () => Session.get("_itemsLoaded"),
   });
   Template.upload_tmpl.helpers({
     writeEnabled: () => hasPermission(Meteor.userId()),
-    style: () => {
-      var count = Uploads.find().count();
-      console.log(count);
-      if (count <= 1) {
-        return "width: 96%; height: 96%;";
-      } else if (count == 2) {
-        var amount = String(92.0 / count) + "vw";
-        return `width: ${amount}; height:${amount};`
-      } else {
-        var amount = "500px";
-        return `width:${amount}; max-width: ${amount}; height: ${amount};`
-      }
-    },
   });
 
   Template.body.events({
@@ -64,14 +38,34 @@ if (Meteor.isClient) {
 
   Template.upload_tmpl.events({
     'click .deleteButton': (e, t) => {
-      if (window.confirm("Are you sure you want to delete?")) {
+      if (window.confirm("Confirm remove?")) {
         var _id = e.target.getAttribute("docId");
         Meteor.call("deleteFile", _id);
       }
     },
   });
 
-  Meteor.subscribe("uploads");
+  /* Lazy loading */
+  var reCheckLazyLoading = function () {
+    setTimeout(() => $(window).trigger("lookup"), 500);
+  }
+  Template.upload_tmpl.rendered = function () {
+    $('img').unveil(100, function() {
+      $(this).load(function() {
+        this.removeAttribute('width');
+        this.removeAttribute('height');
+        this.style.opacity = 1;
+      });
+    });
+    reCheckLazyLoading();
+  };
+  Uploads.find().observe({
+    added: reCheckLazyLoading,
+    removed: reCheckLazyLoading,
+  })
+
+  /* Subscribe */
+  Meteor.subscribe("uploads", () => Session.set('_itemsLoaded', true));
   Meteor.subscribe("yourself");
 }
 
@@ -107,7 +101,6 @@ if (Meteor.isServer) {
     }
   });
 
-
   /* Permissions */
   Meteor.users.allow({
     insert: (userId, doc) => false,
@@ -136,3 +129,19 @@ Meteor.methods({
     }
   }
 });
+
+/**
+ * Sandstorm permission checker
+ * @param {String} userId
+ */
+var hasPermission = function (userId) {
+  var result;
+  try {
+    var user = Meteor.users.findOne(userId);
+    var p = user.services.sandstorm.permissions;
+    result = p.indexOf('modify') !== -1 || p.indexOf('owner') !== -1;
+  } catch (err) {
+    result = false;
+  }
+  return result;
+}
