@@ -28,7 +28,7 @@ body {
   text-align:center;
 }
 
-.upload-cell img {
+.upload-cell img, .upload-cell video {
   max-width:100%;
   height:auto;
   opacity: 0;

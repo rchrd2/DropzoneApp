@@ -29,14 +29,24 @@
 
 <template name="upload_tmpl">
   <div class="upload-cell" style="{{style}}">
-    {{#if this.isImage}}
+    {{#if isImage}}
       <div class="image">
-        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+        <img class="lazy" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
              width="500px" height="500px" data-src="{{url}}">
-        {{!-- {{> img src=url }}--}}
       </div>
       {{!--<div class="fit-image-wrapper" style="background-image:url({{url}});"></div>--}}
-    {{else}}
+    {{/if}}
+    {{#if isVideo}}
+      <div class="video">
+        <video class="lazy" data-src="{{url}}" width="500px" height="500px" controls>
+          Sorry, your browser doesn't support embedded videos,
+          but don't worry, you can <a href="{{url}}">download it</a>
+          and watch it with your favorite video player!
+        </video>
+        <div class="link"><a href="{{url}}">{{name}}</a></div>
+      </div>
+    {{/if}}
+    {{#if isFile}}
       <div class="link"><a href="{{url}}">{{name}}</a></div>
     {{/if}}
     {{#if writeEnabled}}

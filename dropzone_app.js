@@ -3,7 +3,13 @@ class UploadModel {
     _.extend(this, doc);
   }
   isImage () {
-    return this.type.indexOf('image') != -1;
+    return this.type.indexOf('image') !== -1;
+  }
+  isVideo () {
+    return this.type.indexOf('video') !== -1;
+  }
+  isFile () {
+    return ! this.isImage() && ! this.isVideo();
   }
 }
 var Uploads = new Mongo.Collection("Uploads", {
@@ -50,12 +56,12 @@ if (Meteor.isClient) {
     setTimeout(() => $(window).trigger("lookup"), 500);
   }
   Template.upload_tmpl.rendered = function () {
-    $('img').unveil(100, function() {
-      $(this).load(function() {
-        this.removeAttribute('width');
-        this.removeAttribute('height');
-        this.style.opacity = 1;
-      });
+    $('.lazy').unveil(100, function() {
+      this.removeAttribute('width');
+      this.removeAttribute('height');
+      this.removeAttribute('data-src');
+      this.removeAttribute('class');
+      this.style.opacity = 1;
     });
     reCheckLazyLoading();
   };
@@ -71,9 +77,17 @@ if (Meteor.isClient) {
 
 if (Meteor.isServer) {
   Meteor.startup(function () {
+    var uploadDir;
+    console.log("PWD:");
+    console.log(process.env.PWD);
+    if (process.env.PWD == '/') {
+      uploadDir = '/var/';
+    } else {
+      uploadDir = process.env.PWD + '/uploads/';
+    }
     UploadServer.init({
-      tmpDir: process.env.PWD + '/uploads/tmp',
-      uploadDir: process.env.PWD + '/uploads/',
+      tmpDir: uploadDir + '/tmp',
+      uploadDir: uploadDir,
       checkCreateDirectories: true,
       finished: function(fileInfo, formFields) {
         _.extend(fileInfo, {
@@ -81,7 +95,7 @@ if (Meteor.isServer) {
           text: "",
           owner: this.userId || null,
         });
-        console.log(this.userId);
+        //console.log(this.userId);
         console.log(fileInfo);
         Uploads.insert(fileInfo);
       },
@@ -139,6 +153,7 @@ var hasPermission = function (userId) {
   try {
     var user = Meteor.users.findOne(userId);
     var p = user.services.sandstorm.permissions;
+    //console.log(p);
     result = p.indexOf('modify') !== -1 || p.indexOf('owner') !== -1;
   } catch (err) {
     result = false;
