@@ -6,7 +6,7 @@ class UploadModel {
     return this.type.indexOf('image') !== -1;
   }
   isVideo () {
-    return this.type.indexOf('video') !== -1;
+    return this.type.indexOf('video') !== -1 || this.name.indexOf('.webm') !== -1;
   }
   isFile () {
     return ! this.isImage() && ! this.isVideo();
@@ -90,10 +90,14 @@ if (Meteor.isServer) {
       uploadDir: uploadDir,
       checkCreateDirectories: true,
       finished: function(fileInfo, formFields) {
+        // UploadServer stores absolute URLS by default. Convert to relative
+        var absoluteBaseUrl = fileInfo.baseUrl;
         _.extend(fileInfo, {
           createdAt: new Date(),
           text: "",
           owner: this.userId || null,
+          baseUrl: '/upload/',
+          url: '/upload/' + fileInfo.url.replace(absoluteBaseUrl, ""),
         });
         //console.log(this.userId);
         console.log(fileInfo);
