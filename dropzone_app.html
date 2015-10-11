@@ -1,0 +1,30 @@
+<head>
+  <title>Dropzone</title>
+</head>
+
+<body>
+  {{> dropzone_app}}
+</body>
+
+<template name="dropzone_app">
+  <div class="dropzone-wrapper {{#if isDrag}}drag{{/if}}">
+    {{> dropzone multiple=true }}
+  </div>
+  {{#unless uploads.count}}
+    <div id="placeholder">Empty. Drop some filez.</div>
+  {{/unless}}
+  {{#each uploads}}
+    {{> upload_tmpl}}
+  {{/each}}
+</template>
+
+<template name="upload_tmpl">
+  <div class="img-responsive">
+    {{#if this.isImage}}
+      <img src="{{url}}" />
+    {{else}}
+      <a href="{{url}}">{{name}}</a>
+    {{/if}}
+    <button class="deleteButton" docId="{{_id}}">Delete</button>
+  </div>
+</template>
