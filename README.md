@@ -12,6 +12,7 @@ TODO
 - [x] Sandstorm user integration
 - [x] Finish the layout design
 - [x] Improve security
+- [ ] Improve dropzone target
 
 Maybe TODO
 - [ ] Add text field to files
