@@ -8,10 +8,10 @@ Setup:
 - create the dir `mkdir -p ./uploads/tmp`
 
 TODO
-- [ ] Delete files
-- [ ] Sandstorm user integration
+- [x] Delete files
+- [x] Sandstorm user integration
 - [ ] Finish the layout design
-- [ ] Improve security
+- [x] Improve security
 
 Maybe TODO
 - [ ] Add text field to files

@@ -1,4 +1,8 @@
 /* CSS declarations go here */
+* {
+  box-sizing:content-box;
+}
+
 html, body {
   margin:0;
   padding:0;
@@ -13,14 +17,29 @@ body {
 /**
  * Responsive image
  */
-.img-responsive {
-  min-width:400px;
-}
-.img-responsive, .img-responsive img {
-  max-height:400px;
-  width:auto;
-  max-width:400px;
+.upload-cell {
+  margin: 1rem;
+  /*max-height:400px;*/
+  /*width:auto;*/
+  /*max-width:400px;*/
   display:inline-block;
+  /*float:left;*/
+  /*object-fit: contain;*/
+}
+
+@media (max-width: 480px) {
+  .upload-cell {
+    width: 100% !important;
+    margin:0;
+  }
+}
+
+.fit-image-wrapper {
+  background-size:contain;
+  background-repeat:no-repeat;
+  background-position:center center;
+  width:100%;
+  height:100%;
 }
 
 /**
