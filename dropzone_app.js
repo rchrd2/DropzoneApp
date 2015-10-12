@@ -77,6 +77,23 @@ if (Meteor.isClient) {
 
 if (Meteor.isServer) {
   Meteor.startup(function () {
+    /* Temporary thing for development. Fixup absolute URL */
+    console.log('Checking fixups');
+    var needCorrecting = Uploads.find({'url': {'$regex': 'http:\/\/'}})
+    if (needCorrecting.count() > 0) {
+      needCorrecting.forEach(function(doc) {
+        console.log('Fixup:');
+        console.log(doc);
+        Uploads.update(doc._id, {
+          $set: {
+            url: '/upload/' + doc.name,
+            baseUrl: '/upload/',
+          }
+        });
+      });
+    }
+    /* end temporary fix */
+
     var uploadDir;
     console.log("PWD:");
     console.log(process.env.PWD);
