@@ -9,11 +9,11 @@
 <template name="dropzone_app">
 
   {{#if writeEnabled}}
-    <div class="dropzone-wrapper {{#if isDrag}}drag{{/if}}">
+    <div class="dropzone-wrapper {{#if isDrag}}drag{{/if}} {{#if empty}}empty{{/if}}">
       {{> dropzone multiple=true }}
     </div>
     {{#unless uploads.count}}
-      <div id="placeholder">Drop some files.</div>
+      {{!-- <div id="placeholder">Drop some files.</div> --}}
     {{/unless}}
   {{/if}}
 
@@ -21,7 +21,7 @@
     {{#each uploads}}
       {{> upload_tmpl}}
     {{else}}
-      <div>Empty</div>
+      {{!-- <div>Empty</div> --}}
     {{/each}}
   {{/if}}
 

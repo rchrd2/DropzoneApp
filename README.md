@@ -2,17 +2,16 @@
 
 Sandstorm app for sharing collections of files. Compare to Google Drive or Dropbox.
 
-
-
 Setup:
 - create the dir `mkdir -p ./uploads/tmp`
+- run it: `meteor`
 
 TODO
 - [x] Delete files
 - [x] Sandstorm user integration
 - [x] Finish the layout design
 - [x] Improve security
-- [ ] Improve dropzone target
+- [x] Improve dropzone target
 
 Maybe TODO
 - [ ] Add text field to files

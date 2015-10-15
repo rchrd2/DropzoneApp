@@ -26,7 +26,6 @@ function initClient () {
     // Asynchronously check permission on startup
     Meteor.call('hasPermission', (error, result) => {
       _hasPermissionCache = result;
-      console.log("result", result);
       Session.set("_hasPermissionCache", result);
     });
   });
@@ -181,7 +180,7 @@ function initServer () {
     hasPermission: function () {
       var h = headers.get(this);
       var p = h['x-sandstorm-permissions'] || "";
-      console.log(p);
+      // console.log(p);
       return p.indexOf('modify') !== -1 || p.indexOf('owner') !== -1;
     },
   });
