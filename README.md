@@ -18,6 +18,8 @@ Maybe TODO
 - [ ] Allow re-ordering of files
 - [ ] Add audio and video player
 - [ ] Add instance settings. Eg page title
+- [ ] Make dropzone indicator even more awesome
+
 
 ## Reference
 

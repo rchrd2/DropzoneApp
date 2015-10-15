@@ -74,11 +74,11 @@ body {
   /* dropzone styles */
   padding-top: 46vh;
   -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
+    -webkit-user-select: none;
+     -khtml-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
   cursor: default;
 }
 
@@ -120,16 +120,16 @@ body {
 }
 .jqDropZone.hover {
   /*background: lawngreen;*/
-  background-color: #fff;
+  background-color: #eee;
   /*opacity:.8;*/
   /*color: #fff;*/
-  color: #000;
+  /*color: #000;*/
 }
 .jqDropZone.fade {
-  -webkit-transition: all 0.3s ease-out;
-  -moz-transition: all 0.3s ease-out;
-  -ms-transition: all 0.3s ease-out;
-  -o-transition: all 0.3s ease-out;
-  transition: all 0.3s ease-out;
+  /*-webkit-transition: all 0.2s ease-out;
+     -moz-transition: all 0.2s ease-out;
+      -ms-transition: all 0.2s ease-out;
+       -o-transition: all 0.2s ease-out;
+          transition: all 0.2s ease-out;*/
   /*opacity: 1;*/
 }
