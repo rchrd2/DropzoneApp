@@ -17,19 +17,30 @@ var Uploads = new Mongo.Collection("Uploads", {
 });
 
 
-if (Meteor.isClient) {
+function initClient () {
   Session.set("_isDrag", false);
   Session.set("_itemsLoaded", false);
+  Session.set("_hasPermissionCache", false);
+
+  Meteor.startup(function () {
+    // Asynchronously check permission on startup
+    Meteor.call('hasPermission', (error, result) => {
+      _hasPermissionCache = result;
+      console.log("result", result);
+      Session.set("_hasPermissionCache", result);
+    });
+  });
 
   Template.dropzone_app.helpers({
     uploads: () => Uploads.find({}, {sort: {createdAt: -1}}),
     empty: () => Uploads.find().count() === 0,
     isDrag: () => Session.get("_isDrag"),
-    writeEnabled: () => hasPermission(Meteor.userId()),
+    writeEnabled: () => Session.get("_hasPermissionCache"),
     isLoaded: () => Session.get("_itemsLoaded"),
   });
+
   Template.upload_tmpl.helpers({
-    writeEnabled: () => hasPermission(Meteor.userId()),
+    writeEnabled: () => Session.get("_hasPermissionCache"),
   });
 
   Template.body.events({
@@ -72,10 +83,19 @@ if (Meteor.isClient) {
 
   /* Subscribe */
   Meteor.subscribe("uploads", () => Session.set('_itemsLoaded', true));
-  Meteor.subscribe("yourself");
 }
 
-if (Meteor.isServer) {
+function initServer () {
+  /* Clean headers, because undefined values break the headers lib */
+  WebApp.rawConnectHandlers.use(function (req, res, next) {
+    for (var key in req.headers) {
+      if (req.headers[key] === undefined) {
+        delete req.headers[key];
+      }
+    }
+    return next();
+  });
+
   Meteor.startup(function () {
     /* Temporary thing for development. Fixup absolute URL */
     console.log('Checking fixups');
@@ -127,57 +147,51 @@ if (Meteor.isServer) {
   /* Publish */
   Meteor.publish("uploads", () => Uploads.find());
 
-  // Include the extra fields, or else they won't be on the client.
-  Meteor.publish("yourself", function () {
-    if ( ! this.userId) {
-      return [];
-    } else {
-      return Meteor.users.find(this.userId, {fields: {"services.sandstorm": 1}});
-    }
-  });
-
   /* Permissions */
+  Uploads.allow({
+    insert: (userId, doc) => Meteor.call('hasPermission'),
+    update: (userId, doc) => Meteor.call('hasPermission'),
+    remove: (userId, doc) => Meteor.call('hasPermission'),
+  });
   Meteor.users.allow({
     insert: (userId, doc) => false,
     update: (userId, doc) => false,
     remove: (userId, doc) => false,
   });
-  Uploads.allow({
-    insert: (userId, doc) => hasPermission(userId),
-    update: (userId, doc) => hasPermission(userId),
-    remove: (userId, doc) => hasPermission(userId),
+
+  Meteor.methods({
+    deleteFile: function (_id) {
+      if ( ! _id instanceof String) {
+        throw new Meteor.Error(404, 'Invalid id argument');
+      }
+      var upload = Uploads.findOne(_id);
+      if (upload == null) {
+        throw new Meteor.Error(404, 'Upload not found'); // maybe some other code
+      }
+      Uploads.remove(_id);
+      if (Meteor.isServer) {
+        UploadServer.delete(upload.path);
+      }
+    },
+
+    /**
+     * Note it's important to use an old-school function() {}, so `this` gets
+     * bound correctly
+     */
+    hasPermission: function () {
+      var h = headers.get(this);
+      var p = h['x-sandstorm-permissions'] || "";
+      console.log(p);
+      return p.indexOf('modify') !== -1 || p.indexOf('owner') !== -1;
+    },
   });
+
 }
 
-Meteor.methods({
-  'deleteFile': function (_id) {
-    if ( ! _id instanceof String) {
-      throw new Meteor.Error(404, 'Invalid id argument');
-    }
-    var upload = Uploads.findOne(_id);
-    if (upload == null) {
-      throw new Meteor.Error(404, 'Upload not found'); // maybe some other code
-    }
-    Uploads.remove(_id);
-    if (Meteor.isServer) {
-      UploadServer.delete(upload.path);
-    }
-  }
-});
+if (Meteor.isClient) {
+  initClient();
+}
 
-/**
- * Sandstorm permission checker
- * @param {String} userId
- */
-var hasPermission = function (userId) {
-  var result;
-  try {
-    var user = Meteor.users.findOne(userId);
-    var p = user.services.sandstorm.permissions;
-    //console.log(p);
-    result = p.indexOf('modify') !== -1 || p.indexOf('owner') !== -1;
-  } catch (err) {
-    result = false;
-  }
-  return result;
+if (Meteor.isServer) {
+  initServer();
 }

@@ -20,6 +20,9 @@ tomi:upload-server
 tomi:upload-jquery
 
 jacksingleton:accounts-sandstorm-dev@=0.1.1
-kenton:accounts-sandstorm
+kenton:accounts-sandstorm@=0.1.6
+gadicohen:headers@=0.0.30
+check
+
 #strikeout:lazyload-xt
 luisalmeida:unveil
