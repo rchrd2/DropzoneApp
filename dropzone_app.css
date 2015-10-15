@@ -53,22 +53,7 @@ body {
 /**
  * Placeholder
  */
-#placeholder {
-  height:100%;
-  width:100%;
-  /*background-color:grey;*/
-  /*display:none;*/
-  /*width:100%;*/
-  /*height:100%;*/
-  /*position:fixed;*/
-  /*z-index:-10;*/
-}
-
-/**
- * Drop zone
- */
-.dropzone-wrapper {
-  display:none;
+#placeholder, .dropzone-wrapper {
   position:fixed;
   top:0;
   left:0;
@@ -76,7 +61,37 @@ body {
   bottom:0;
   margin:0;
   padding:0;
-  /*opacity:0;*/
+
+  /* style */
+  font-size: 2vw;
+  background: #fff;
+  font-family: sans-serif;
+  text-shadow: 0px 2px 2px rgba(255, 255, 255, 0.4);
+  text-align: center;
+}
+
+#placeholder, .jqDropZone {
+  /* dropzone styles */
+  padding-top: 46vh;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  cursor: default;
+}
+
+#placeholder {
+  color: #aaa;
+}
+
+
+/**
+ * Drop zone
+ */
+.dropzone-wrapper {
+  display:none;
 }
 .dropzone-wrapper.drag, .dropzone-wrapper.empty {
   display:block;
@@ -98,21 +113,9 @@ body {
   right:0;
   bottom:0;
   /*opacity:0;*/
-
-
-  /* style */
-  font-size: 2vw;
-  background: #fff;
-  font-family: sans-serif;
   color: #666;
-  text-shadow: 0px 2px 2px rgba(255, 255, 255, 0.4);
-
-  padding-top: 46vh;
-  /*transform: translateY(-50%);*/
-  text-align: center;
 }
 .jqDropZone.in {
-  font-size: larger;
   opacity:.5;
 }
 .jqDropZone.hover {
